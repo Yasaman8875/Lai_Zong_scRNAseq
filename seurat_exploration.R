@@ -3,14 +3,13 @@ library("tidyverse")
 library("data.table")
 library("scProportionTest")
 library("future")
-library("data.table")
 
 options(future.globals.maxSize = 10000 * 1024 ^2)
 plan("multiprocess", workers = 12)
 
 seurat_integrated <- readRDS(file.path("results", "r_objects", "seurat_integrated.RDS"))
 Idents(seurat_integrated) <- "integrated_snn_res.0.7"
-
+DefaultAssay(seurat_integrated) <- "SCT"
 ##################
 ## Marker Genes ##
 ##################
@@ -52,25 +51,45 @@ markers <- FindAllMarkers(
 saveRDS(markers, file.path("results", "r_objects", "markers.RDS"))
 ## Load and prepare marker list.
 
-setDT(markers)
-markers <- markers[p_val_adj < 0.05]
-markers[, c("avg_log2FC", "cluster") := list(log2(exp(avg_logFC)), str_c("cluster_", cluster))]
-markers <- markers[order(cluster, -avg_log2FC)]
+markers <- subset(markers, p_val_adj < 0.05)
+ann_markers <- inner_join(x = markers, 
+                          y = annotations[, c("gene_name", "description")],
+                          by = c("gene" = "gene_name")) %>%
+  unique()
+
+# Rearrange the columns to be more intuitive
+ann_markers <- ann_markers[ , c(6, 7, 2:4, 1, 5,8)]
+
+# Order the rows by p-adjusted values
+ann_markers <- ann_markers %>%
+  dplyr::arrange(cluster, p_val_adj)
+
+# Save markers to file
+write.csv(ann_markers, 
+          file = file.path("results", "markers", "combined_all_markers.csv"), 
+          quote = FALSE, 
+          row.names = FALSE)
+
+# Extract top 5 markers per cluster
+top5 <- ann_markers %>%
+  group_by(cluster) %>%
+  top_n(n = 5,
+        wt = avg_logFC)
+
+write.table(top5, file.path("results", "markers", "top5_combined.csv"), sep=",", 
+            col.names=TRUE, row.names=FALSE, quote=FALSE)
 ## Split the list based on cluster and save results.
 
-markers <- split(markers, markers$cluster)
+ann_markers <- split(ann_markers, ann_markers$cluster)
 
-if (!dir.exists(file.path("results", "marker_tables"))) {
-  dir.create(file.path("results", "marker_tables"), recursive = TRUE)
-}
 
-iwalk(markers, function(x, y) {
-  file_name <- file.path("results", "marker_tables", str_c("markers_", y, ".tsv"))
+iwalk(ann_markers, function(x, y) {
+  file_name <- file.path("results", "markers", str_c("markers_", y, ".tsv"))
   fwrite(x, file_name, quote = FALSE, sep = "\t", row.names = FALSE, col.names = TRUE)
 })
+
 ## Cell Cycle Counts
 ## ----------
-
 ## Prepare data for permutation test.
 
 if (!dir.exists(file.path("results", "cell_cycle"))) {
