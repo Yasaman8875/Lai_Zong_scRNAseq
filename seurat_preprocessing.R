@@ -202,7 +202,7 @@ dev.off()
 if (!dir.exists("tempdir")) dir.create("tempdir")
 set.tempdir("tempdir")
 
-Idents(seurat_integrated) <- "integrated_snn_res.0.7"
+Idents(seurat_integrated) <- "integrated_snn_res.0.3"
 seurat_integrated <- RunUMAP(seurat_integrated, dims = 1:40)
 p <- DimPlot(seurat_integrated, group.by = "ident", split.by = "orig.ident", ncol = 2)
 

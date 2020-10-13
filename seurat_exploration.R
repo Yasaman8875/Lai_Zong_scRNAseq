@@ -3,6 +3,7 @@ library("tidyverse")
 library("data.table")
 library("scProportionTest")
 library("future")
+library(patchwork)
 
 options(future.globals.maxSize = 10000 * 1024 ^2)
 plan("multiprocess", workers = 12)
@@ -32,7 +33,7 @@ get_conserved <- function(cluster){
 }
 annotations <- read.csv("annotation.csv")
 
-conserved_markers <- map_dfr(1:20, get_conserved)
+conserved_markers <- map_dfr(1:12, get_conserved)
 
 top10 <- conserved_markers %>% 
   mutate(avg_fc = (DMSO_avg_logFC + EZH2i_avg_logFC + Combo_avg_logFC + RACi_avg_logFC) / 4) %>% 
@@ -169,7 +170,7 @@ dev.off()
 ## Violin Plot
 plots <- VlnPlot(seurat_integrated, features = genes, split.by = "orig.ident", 
                  pt.size = 0, combine = FALSE)
-p <- wrap_plots(plots = plots, ncol = 3)
+p <- wrap_plots(plots = plots, ncol = 2)
 pdf(file.path("results", "gene_plots", "Violin.pdf"), height = 16, width = 16)
 p
 dev.off()
