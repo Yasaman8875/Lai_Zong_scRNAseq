@@ -9,7 +9,7 @@ options(future.globals.maxSize = 10000 * 1024 ^2)
 plan("multiprocess", workers = 12)
 
 seurat_integrated <- readRDS(file.path("results", "r_objects", "seurat_integrated.RDS"))
-Idents(seurat_integrated) <- "integrated_snn_res.0.7"
+Idents(seurat_integrated) <- "integrated_snn_res.0.3"
 DefaultAssay(seurat_integrated) <- "SCT"
 ##################
 ## Marker Genes ##
@@ -36,7 +36,7 @@ annotations <- read.csv("annotation.csv")
 conserved_markers <- map_dfr(1:12, get_conserved)
 
 top10 <- conserved_markers %>% 
-  mutate(avg_fc = (DMSO_avg_logFC + EZH2i_avg_logFC + Combo_avg_logFC + RACi_avg_logFC) / 4) %>% 
+  mutate(avg_fc = (DMSO_avg_logFC + Combo_avg_logFC) / 2) %>% 
   group_by(cluster_id) %>% 
   top_n(n = 10, 
         wt = avg_fc)
@@ -131,7 +131,7 @@ sc_utils_obj <- sc_utils(seurat_integrated)
 
 walk(comparisons, function(x) {
   sc_utils_obj <- permutation_test(
-    sc_utils_obj, cluster_identity = "integrated_snn_res.0.7",
+    sc_utils_obj, cluster_identity = "integrated_snn_res.0.3",
     sample_1 = x[1], sample_2 = x[2]
   )
   
