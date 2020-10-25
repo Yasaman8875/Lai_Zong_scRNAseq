@@ -141,7 +141,29 @@ walk(comparisons, function(x) {
   pdf(file.path("results", "cluster_counts", file_name), height = 3, width = 8)
   print(p); dev.off()
 })
+## Differential Expression Analysis
+seurat_integrated$celltype.stim <- paste(Idents(seurat_integrated), seurat_integrated$orig.ident, sep = "_")
+seurat_integrated$celltype <- Idents(seurat_integrated)
+Idents(seurat_integrated) <- "celltype.stim"
 
+clusters <- c(2, 7, 8)
+for (i in clusters) {
+  write.table(FindMarkers(seurat_integrated, ident.1 = paste(i,"_EZH2i",sep = ""), 
+                          ident.2 = paste(i,"_DMSO",sep = ""), verbose = FALSE, 
+                          assay = "SCT", slot = "data"), file.path("results", "markers", 
+                          paste(i, "_EZH2i_DMSO.tsv", sep="")), sep = "\t",  
+                          col.names=TRUE, row.names=TRUE)
+  write.table(FindMarkers(seurat_integrated, ident.1 = paste(i,"_RACi",sep = ""), 
+                          ident.2 = paste(i,"_DMSO",sep = ""), verbose = FALSE, 
+                          assay = "SCT", slot = "data"), file.path("results", "markers", 
+                          paste(i, "_RACi_DMSO.tsv", sep="")), sep = "\t",  
+                          col.names=TRUE, row.names=TRUE)
+  write.table(FindMarkers(seurat_integrated, ident.1 = paste(i,"_Combo",sep = ""), 
+                          ident.2 = paste(i,"_DMSO",sep = ""), verbose = FALSE, 
+                          assay = "SCT", slot = "data"), file.path("results", "markers", 
+                          paste(i, "_Combo_DMSO.tsv", sep="")), sep = "\t",  
+                          col.names=TRUE, row.names=TRUE)
+}
 ## Custom Genes Analysis
 genes <- c("ALDH1A1", "ALDH1A3", "CD24", "CD44", "PROM1", "BMI1", "SOX2")
 # Currently omitting CD117, OCT4, NANOG1
@@ -172,5 +194,73 @@ plots <- VlnPlot(seurat_integrated, features = genes, split.by = "orig.ident",
                  pt.size = 0, combine = FALSE)
 p <- wrap_plots(plots = plots, ncol = 2)
 pdf(file.path("results", "gene_plots", "Violin.pdf"), height = 16, width = 16)
+p
+dev.off()
+
+## Plots for cluster 2
+genes <- c("TM4SF1", "NMU", "UPK1B")
+p <- FeaturePlot(seurat_integrated, features = genes, 
+                 split.by = "orig.ident", max.cutoff = 3, 
+                 cols = c("grey", "red"), pt.size = 0.1)
+
+pdf(file.path("results", "gene_plots", "Feature_2.pdf"), height = 16, width = 16)
+p
+dev.off()
+
+plots <- VlnPlot(seurat_integrated, features = genes, split.by = "orig.ident", 
+                 pt.size = 0, combine = FALSE)
+p <- wrap_plots(plots = plots, ncol = 1)
+pdf(file.path("results", "gene_plots", "Violin_2.pdf"), height = 16, width = 16)
+p
+dev.off()
+
+## Plots for cluster 7
+genes <- c("CXCL1", "CXCL2", "CXCL4", "CXCL8")
+p <- FeaturePlot(seurat_integrated, features = genes, 
+                 split.by = "orig.ident", max.cutoff = 3, 
+                 cols = c("grey", "red"), pt.size = 0.1)
+
+pdf(file.path("results", "gene_plots", "Feature_7.pdf"), height = 16, width = 16)
+p
+dev.off()
+
+plots <- VlnPlot(seurat_integrated, features = genes, split.by = "orig.ident", 
+                 pt.size = 0, combine = FALSE)
+p <- wrap_plots(plots = plots, ncol = 2)
+pdf(file.path("results", "gene_plots", "Violin_7.pdf"), height = 12, width = 20)
+p
+dev.off()
+
+## Plots for cluster 8
+genes <- c("FLG", "CDH6", "TMEM100", "CD24", "CTH")
+p <- FeaturePlot(seurat_integrated, features = genes, 
+                 split.by = "orig.ident", max.cutoff = 3, 
+                 cols = c("grey", "red"), pt.size = 0.1)
+
+pdf(file.path("results", "gene_plots", "Feature_8.pdf"), height = 16, width = 16)
+p
+dev.off()
+
+plots <- VlnPlot(seurat_integrated, features = genes, split.by = "orig.ident", 
+                 pt.size = 0, combine = FALSE)
+p <- wrap_plots(plots = plots, ncol = 2)
+pdf(file.path("results", "gene_plots", "Violin_8.pdf"), height = 12, width = 20)
+p
+dev.off()
+
+## Misc 
+genes <- c("CDK1", "CCNB1", "HIST2H2AC", "UCA1", "PLCG2")
+p <- FeaturePlot(seurat_integrated, features = genes, 
+                 split.by = "orig.ident", max.cutoff = 3, 
+                 cols = c("grey", "red"), pt.size = 0.1)
+
+pdf(file.path("results", "gene_plots", "FeatureMisc.pdf"), height = 16, width = 16)
+p
+dev.off()
+
+plots <- VlnPlot(seurat_integrated, features = genes, split.by = "orig.ident", 
+                 pt.size = 0, combine = FALSE)
+p <- wrap_plots(plots = plots, ncol = 2)
+pdf(file.path("results", "gene_plots", "ViolinMisc.pdf"), height = 12, width = 20)
 p
 dev.off()
