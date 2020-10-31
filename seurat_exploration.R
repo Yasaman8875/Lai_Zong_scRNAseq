@@ -215,7 +215,7 @@ p
 dev.off()
 
 ## Plots for cluster 7
-genes <- c("CXCL1", "CXCL2", "CXCL4", "CXCL8")
+genes <- c("CXCL1", "CXCL2", "CXCL3", "CXCL8")
 p <- FeaturePlot(seurat_integrated, features = genes, 
                  split.by = "orig.ident", max.cutoff = 3, 
                  cols = c("grey", "red"), pt.size = 0.1)
