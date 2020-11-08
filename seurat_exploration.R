@@ -18,30 +18,7 @@ DefaultAssay(seurat_integrated) <- "SCT"
 if (!dir.exists(file.path("results", "markers"))) {
   dir.create(file.path("results", "markers"))
 }
-
-get_conserved <- function(cluster){
-  FindConservedMarkers(seurat_integrated,
-                       ident.1 = cluster,
-                       grouping.var = "orig.ident",
-                       only.pos = TRUE, 
-                       assay = "SCT", 
-                       slot = "data") %>%
-    rownames_to_column(var = "gene") %>%
-    left_join(y = unique(annotations[, c("gene_name", "description")]),
-              by = c("gene" = "gene_name")) %>%
-    cbind(cluster_id = cluster, .)
-}
 annotations <- read.csv("annotation.csv")
-
-conserved_markers <- map_dfr(1:12, get_conserved)
-
-top10 <- conserved_markers %>% 
-  mutate(avg_fc = (DMSO_avg_logFC + Combo_avg_logFC) / 2) %>% 
-  group_by(cluster_id) %>% 
-  top_n(n = 10, 
-        wt = avg_fc)
-write.table(top10, file.path("results", "markers", "top10.csv"), sep=",", col.names=TRUE, 
-            row.names=FALSE, quote=FALSE)
 
 ## Find all markers
 markers <- FindAllMarkers(
@@ -141,6 +118,10 @@ walk(comparisons, function(x) {
   pdf(file.path("results", "cluster_counts", file_name), height = 3, width = 8)
   print(p); dev.off()
 })
+
+# Prints the cluster counts separated per sample.
+table(seurat_integrated@meta.data$integrated_snn_res.0.3, seurat_integrated@meta.data$orig.ident)
+
 ## Differential Expression Analysis
 seurat_integrated$celltype.stim <- paste(Idents(seurat_integrated), seurat_integrated$orig.ident, sep = "_")
 seurat_integrated$celltype <- Idents(seurat_integrated)

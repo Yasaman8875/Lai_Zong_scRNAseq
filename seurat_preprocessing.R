@@ -156,7 +156,7 @@ seurat_obj <- map(seurat_obj, function(x) {
   return(x)
 })
 seurat_obj <- map(seurat_obj, function(x) {
-  x <- SCTransform(x, vars.to.regress = "CC.Difference", verbose = FALSE)
+  x <- SCTransform(x, vars.to.regress = c("CC.Difference", "percent.mt"), verbose = FALSE)
   return(x)
 })
 
