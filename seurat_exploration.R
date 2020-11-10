@@ -127,8 +127,7 @@ seurat_integrated$celltype.stim <- paste(Idents(seurat_integrated), seurat_integ
 seurat_integrated$celltype <- Idents(seurat_integrated)
 Idents(seurat_integrated) <- "celltype.stim"
 
-clusters <- c(2, 7, 8)
-for (i in clusters) {
+for (i in 1:11) {
   write.table(FindMarkers(seurat_integrated, ident.1 = paste(i,"_EZH2i",sep = ""), 
                           ident.2 = paste(i,"_DMSO",sep = ""), verbose = FALSE, 
                           assay = "SCT", slot = "data"), file.path("results", "markers", 
@@ -144,6 +143,11 @@ for (i in clusters) {
                           assay = "SCT", slot = "data"), file.path("results", "markers", 
                           paste(i, "_Combo_DMSO.tsv", sep="")), sep = "\t",  
                           col.names=TRUE, row.names=TRUE)
+  write.table(FindMarkers(seurat_integrated, ident.1 = paste(i,"_Combo",sep = ""),
+			  ident.2 = paste(i,"_RACi",sep = ""), verbose = FALSE,
+			  assay = "SCT", slot = "data"), file.path("results", "markers",
+			  paste(i, "_Combo_RACi.tsv", sep="")), sep = "\t",
+	                  col.names=TRUE, row.names=TRUE)
 }
 ## Custom Genes Analysis
 genes <- c("ALDH1A1", "ALDH1A3", "CD24", "CD44", "PROM1", "BMI1", "SOX2")
