@@ -168,3 +168,47 @@ pdf(file.path("results", "clustering", "clusters_spliced.pdf"), height = 12, wid
 p
 dev.off()
 
+## Cluster markers
+
+Idents(seurat_integrated) <- "integrated_snn_res.0.3"
+DefaultAssay(seurat_integrated) <- "SCT"
+
+if (!dir.exists(file.path("results", "markers"))) {
+  dir.create(file.path("results", "markers"))
+}
+annotations <- read.csv("annotation.csv")
+
+## Find all markers
+markers <- FindAllMarkers(
+  seurat_integrated, assay = "SCT", slot = "data", min.pct = 0.25,
+  return.thresh = 0.05, logfc.threshold = log(1.5)
+)
+
+saveRDS(markers, file.path("results", "r_objects", "markers_spliced.RDS"))
+
+markers <- subset(markers, p_val_adj < 0.05)
+ann_markers <- inner_join(x = markers, 
+                          y = annotations[, c("gene_name", "description")],
+                          by = c("gene" = "gene_name")) %>%
+  unique()
+
+# Rearrange the columns to be more intuitive
+ann_markers <- ann_markers[ , c(6, 7, 2:4, 1, 5,8)]
+
+# Order the rows by p-adjusted values
+ann_markers <- ann_markers %>%
+  dplyr::arrange(cluster, p_val_adj)
+
+# Save markers to file
+write.csv(ann_markers, 
+          file = file.path("results", "markers", "combined_all_markers_spliced.csv"), 
+          quote = FALSE, 
+          row.names = FALSE)
+
+# Extract top 5 markers per cluster
+top5 <- ann_markers %>%
+  group_by(cluster) %>%
+  top_n(n = 5,
+        wt = avg_logFC)
+write.table(top5, file.path("results", "markers", "top5_combined_spliced.csv"), sep=",", 
+            col.names=TRUE, row.names=FALSE, quote=FALSE)
