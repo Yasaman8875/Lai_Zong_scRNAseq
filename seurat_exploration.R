@@ -249,3 +249,78 @@ p <- wrap_plots(plots = plots, ncol = 2)
 pdf(file.path("results", "gene_plots", "ViolinMisc.pdf"), height = 12, width = 20)
 p
 dev.off()
+
+# Epithelial analysis
+# Secretory Epithelial 
+genes <- c("PAX8", "OVGP1")
+p <- FeaturePlot(seurat_integrated, features = genes, 
+                 split.by = "orig.ident", max.cutoff = 3, 
+                 cols = c("grey", "red"), pt.size = 0.1)
+
+pdf(file.path("results", "gene_plots", "Feature_SecEp.pdf"), height = 12, width = 20)
+p
+dev.off()
+
+## Violin Plot
+plots <- VlnPlot(seurat_integrated, features = genes, split.by = "orig.ident", 
+                 pt.size = 0, combine = FALSE)
+p <- wrap_plots(plots = plots, ncol = 1)
+pdf(file.path("results", "gene_plots", "Violin_SecEp.pdf"), height = 20, width = 12)
+p
+dev.off()
+
+# Ciliated
+
+p <- FeaturePlot(seurat_integrated, features = "FOXJ1", 
+                 split.by = "orig.ident", max.cutoff = 3, 
+                 cols = c("grey", "red"), pt.size = 0.1)
+
+pdf(file.path("results", "gene_plots", "Feature_CilEp.pdf"), height = 10, width = 20)
+p
+dev.off()
+
+## Violin Plot
+plots <- VlnPlot(seurat_integrated, features = "FOXJ1", split.by = "orig.ident", 
+                 pt.size = 0, combine = FALSE)
+p <- wrap_plots(plots = plots, ncol = 1)
+pdf(file.path("results", "gene_plots", "Violin_CilEp.pdf"), height = 12, width = 12)
+p
+dev.off()
+
+# Keratin
+
+genes <- c("KRT7", "KRT8", "KRT18")
+p <- FeaturePlot(seurat_integrated, features = genes, 
+                 split.by = "orig.ident", max.cutoff = 3, 
+                 cols = c("grey", "red"), pt.size = 0.1)
+
+pdf(file.path("results", "gene_plots", "Feature_KrtEp.pdf"), height = 18, width = 20)
+p
+dev.off()
+
+## Violin Plot
+plots <- VlnPlot(seurat_integrated, features = genes, split.by = "orig.ident", 
+                 pt.size = 0, combine = FALSE)
+p <- wrap_plots(plots = plots, ncol = 1)
+pdf(file.path("results", "gene_plots", "Violin_KrtEp.pdf"), height = 24, width = 12)
+p
+dev.off()
+
+# Misc/Unclassified
+
+genes <- c("EPCAM", "KRT10")
+p <- FeaturePlot(seurat_integrated, features = genes, 
+                 split.by = "orig.ident", max.cutoff = 3, 
+                 cols = c("grey", "red"), pt.size = 0.1)
+
+pdf(file.path("results", "gene_plots", "Feature_MiscEp.pdf"), height = 15, width = 20)
+p
+dev.off()
+
+## Violin Plot
+plots <- VlnPlot(seurat_integrated, features = genes, split.by = "orig.ident", 
+                 pt.size = 0, combine = FALSE)
+p <- wrap_plots(plots = plots, ncol = 2)
+pdf(file.path("results", "gene_plots", "Violin_MiscEp.pdf"), height = 16, width = 12)
+p
+dev.off()
