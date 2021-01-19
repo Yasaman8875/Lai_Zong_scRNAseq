@@ -251,9 +251,25 @@ p
 dev.off()
 
 # Epithelial analysis
-# Secretory Epithelial 
-genes <- c("PAX8", "OVGP1")
+# Early Secretory Epithelial 
+genes <- c("PAX8", "THY1")
 p <- FeaturePlot(seurat_integrated, features = genes, 
+                 split.by = "orig.ident", max.cutoff = 3, 
+                 cols = c("grey", "red"), pt.size = 0.1)
+
+pdf(file.path("results", "gene_plots", "Feature_EarlySecEp.pdf"), height = 12, width = 20)
+p
+dev.off()
+
+## Violin Plot
+plots <- VlnPlot(seurat_integrated, features = genes, split.by = "orig.ident", 
+                 pt.size = 0, combine = FALSE)
+p <- wrap_plots(plots = plots, ncol = 1)
+pdf(file.path("results", "gene_plots", "Violin_EarlySecEp.pdf"), height = 20, width = 12)
+p
+dev.off()
+
+p <- FeaturePlot(seurat_integrated, features = "OVGP1", 
                  split.by = "orig.ident", max.cutoff = 3, 
                  cols = c("grey", "red"), pt.size = 0.1)
 
@@ -262,16 +278,15 @@ p
 dev.off()
 
 ## Violin Plot
-plots <- VlnPlot(seurat_integrated, features = genes, split.by = "orig.ident", 
+plots <- VlnPlot(seurat_integrated, features = "OVGP1", split.by = "orig.ident", 
                  pt.size = 0, combine = FALSE)
 p <- wrap_plots(plots = plots, ncol = 1)
-pdf(file.path("results", "gene_plots", "Violin_SecEp.pdf"), height = 20, width = 12)
+pdf(file.path("results", "gene_plots", "Violin_SecEp.pdf"), height = 12, width = 12)
 p
 dev.off()
-
 # Ciliated
-
-p <- FeaturePlot(seurat_integrated, features = "FOXJ1", 
+genes <- c("FOXJ1", "RUNX3")
+p <- FeaturePlot(seurat_integrated, features = genes, 
                  split.by = "orig.ident", max.cutoff = 3, 
                  cols = c("grey", "red"), pt.size = 0.1)
 
@@ -280,7 +295,7 @@ p
 dev.off()
 
 ## Violin Plot
-plots <- VlnPlot(seurat_integrated, features = "FOXJ1", split.by = "orig.ident", 
+plots <- VlnPlot(seurat_integrated, features = genes, split.by = "orig.ident", 
                  pt.size = 0, combine = FALSE)
 p <- wrap_plots(plots = plots, ncol = 1)
 pdf(file.path("results", "gene_plots", "Violin_CilEp.pdf"), height = 12, width = 12)
