@@ -204,13 +204,21 @@ set.tempdir("tempdir")
 
 Idents(seurat_integrated) <- "integrated_snn_res.0.3"
 seurat_integrated <- RunUMAP(seurat_integrated, dims = 1:40)
-p <- DimPlot(seurat_integrated, group.by = "ident", split.by = "orig.ident", ncol = 2)
+p <- DimPlot(seurat_integrated, group.by = "ident", split.by = "orig.ident", ncol = 1)
 
 pdf(file.path("results", "clustering", "clusters.pdf"), height = 12, width = 10)
 p
 dev.off()
 
+# Integrated clusters
+p <- DimPlot(seurat_integrated)
+pdf(file.path("results", "clustering", "integrated_clusters.pdf"), height = 10, width = 10)
+p
+dev.off()
+
+# QC Clusters
 metrics <-  c("nCount_RNA", "nFeature_RNA", "S.Score", "G2M.Score", "percent.mt")
+
 
 p <- FeaturePlot(seurat_integrated, 
                  reduction = "umap", 
