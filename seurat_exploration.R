@@ -335,7 +335,7 @@ dev.off()
 ## Violin Plot
 plots <- VlnPlot(seurat_integrated, features = genes, split.by = "orig.ident", 
                  pt.size = 0, combine = FALSE)
-p <- wrap_plots(plots = plots, ncol = 2)
+p <- wrap_plots(plots = plots, ncol = 1)
 pdf(file.path("results", "gene_plots", "Violin_MiscEp.pdf"), height = 16, width = 12)
 p
 dev.off()
