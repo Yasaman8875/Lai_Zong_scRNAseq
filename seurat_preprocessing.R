@@ -204,6 +204,9 @@ set.tempdir("tempdir")
 
 Idents(seurat_integrated) <- "integrated_snn_res.0.3"
 seurat_integrated <- RunUMAP(seurat_integrated, dims = 1:40)
+
+seurat_integrated$orig.ident <- factor(seurat_integrated$orig.ident, levels = c("DMSO", "EZH2i", "RACi", "Combo"))
+
 p <- DimPlot(seurat_integrated, group.by = "ident", split.by = "orig.ident", ncol = 2)
 
 pdf(file.path("results", "clustering", "clusters.pdf"), height = 12, width = 10)
