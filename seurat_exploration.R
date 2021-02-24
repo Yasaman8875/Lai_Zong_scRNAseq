@@ -66,58 +66,6 @@ iwalk(ann_markers, function(x, y) {
   fwrite(x, file_name, quote = FALSE, sep = "\t", row.names = FALSE, col.names = TRUE)
 })
 
-## Cell Cycle Counts
-## ----------
-## Prepare data for permutation test.
-
-if (!dir.exists(file.path("results", "cell_cycle"))) {
-  dir.create(file.path("results", "cell_cycle"))
-}
-
-sc_utils_obj <- sc_utils(seurat_integrated)
-
-comparisons <- list(
-  c("EZH2i", "DMSO"),
-  c("RACi", "DMSO"),
-  c("Combo", "DMSO"),
-  c("EZH2i", "RACi"),
-  c("Combo", "EZH2i"),
-  c("Combo", "RACi")
-)
-
-## Permutation tests and plotting.
-
-walk(comparisons, function(x) {
-  sc_utils_obj <- permutation_test(
-    sc_utils_obj, cluster_identity = "Phase",
-    sample_1 = x[1], sample_2 = x[2]
-  )
-  
-  p <- permutation_plot(sc_utils_obj, log2FD_threshold = 1)
-  
-  file_name <- str_c(x[1], "_vs_", x[2], ".pdf")
-  pdf(file.path("results", "cell_cycle", file_name), height = 3, width = 8)
-  print(p); dev.off()
-})
-
-if (!dir.exists(file.path("results", "cluster_counts"))) {
-  dir.create(file.path("results", "cluster_counts"))
-}
-
-sc_utils_obj <- sc_utils(seurat_integrated)
-
-walk(comparisons, function(x) {
-  sc_utils_obj <- permutation_test(
-    sc_utils_obj, cluster_identity = "integrated_snn_res.0.3",
-    sample_1 = x[1], sample_2 = x[2]
-  )
-  
-  p <- permutation_plot(sc_utils_obj, log2FD_threshold = 1)
-  
-  file_name <- str_c(x[1], "_vs_", x[2], ".pdf")
-  pdf(file.path("results", "cluster_counts", file_name), height = 3, width = 8)
-  print(p); dev.off()
-})
 
 # Prints the cluster counts separated per sample.
 table(seurat_integrated@meta.data$integrated_snn_res.0.3, seurat_integrated@meta.data$orig.ident)
@@ -339,3 +287,92 @@ p <- wrap_plots(plots = plots, ncol = 1)
 pdf(file.path("results", "gene_plots", "Violin_MiscEp.pdf"), height = 16, width = 12)
 p
 dev.off()
+
+# Label clusters
+seurat_integrated <- RenameIdents(object = seurat_integrated, 
+                                  "1" = "Misc. 1",
+                                  "2" = "CDD",
+                                  "3" = "Misc. 2",
+                                  "4" = "Cell Cycle",
+                                  "5" = "Inflammatory Response",
+                                  "6" = "Misc. 3",
+                                  "7" = "Misc. 4",
+                                  "8" = "Cell Division",
+                                  "9" = "GTSE1 enriched",
+                                  "10" = "Misc. 5",
+                                  "11" = "Doublets")
+# Plot the UMAP
+p <- DimPlot(object = seurat_integrated, 
+            group.by = "ident", 
+            split.by = "orig.ident", 
+            ncol = 2,
+            reduction = "umap")
+
+pdf(file.path("results", "clustering", "clusters.pdf"), height = 12, width = 10)
+p
+dev.off()
+
+# Integrated clusters
+p <- DimPlot(seurat_integrated, 
+             reduction = "umap",
+             label = TRUE,
+             label.size = 3,
+             repel = TRUE)
+pdf(file.path("results", "clustering", "integrated_clusters.pdf"), height = 10, width = 10)
+p
+dev.off()
+
+## Cell Cycle Counts
+## ----------
+## Prepare data for permutation test.
+
+if (!dir.exists(file.path("results", "cell_cycle"))) {
+    dir.create(file.path("results", "cell_cycle"))
+}
+
+sc_utils_obj <- sc_utils(seurat_integrated)
+
+comparisons <- list(
+    c("EZH2i", "DMSO"),
+    c("RACi", "DMSO"),
+    c("Combo", "DMSO"),
+    c("EZH2i", "RACi"),
+    c("Combo", "EZH2i"),
+    c("Combo", "RACi")
+)
+
+## Permutation tests and plotting.
+
+walk(comparisons, function(x) {
+    sc_utils_obj <- permutation_test(
+        sc_utils_obj, cluster_identity = "Phase",
+        sample_1 = x[1], sample_2 = x[2]
+    )
+    
+    p <- permutation_plot(sc_utils_obj, log2FD_threshold = 1)
+    
+    file_name <- str_c(x[1], "_vs_", x[2], ".pdf")
+    pdf(file.path("results", "cell_cycle", file_name), height = 3, width = 8)
+    print(p); dev.off()
+})
+
+if (!dir.exists(file.path("results", "cluster_counts"))) {
+    dir.create(file.path("results", "cluster_counts"))
+}
+seurat_integrated$custom_clusters <- Idents(seurat_integrated)
+Idents(seurat_integrated) <- "custom_clusters"
+
+sc_utils_obj <- sc_utils(seurat_integrated)
+
+walk(comparisons, function(x) {
+    sc_utils_obj <- permutation_test(
+        sc_utils_obj, cluster_identity = "custom_clusters",
+        sample_1 = x[1], sample_2 = x[2]
+    )
+    
+    p <- permutation_plot(sc_utils_obj, log2FD_threshold = 1)
+    
+    file_name <- str_c(x[1], "_vs_", x[2], ".pdf")
+    pdf(file.path("results", "cluster_counts", file_name), height = 3, width = 8)
+    print(p); dev.off()
+})
