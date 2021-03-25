@@ -333,12 +333,12 @@ if (!dir.exists(file.path("results", "cell_cycle"))) {
 sc_utils_obj <- sc_utils(seurat_integrated)
 
 comparisons <- list(
-    c("EZH2i", "DMSO"),
-    c("RACi", "DMSO"),
+    c("GSK126", "DMSO"),
+    c("NSC23766", "DMSO"),
     c("Combo", "DMSO"),
-    c("EZH2i", "RACi"),
-    c("Combo", "EZH2i"),
-    c("Combo", "RACi")
+    c("GSK126", "NSC23766"),
+    c("Combo", "GSK126"),
+    c("Combo", "NSC23766")
 )
 
 ## Permutation tests and plotting.
@@ -376,3 +376,84 @@ walk(comparisons, function(x) {
     pdf(file.path("results", "cluster_counts", file_name), height = 3, width = 8)
     print(p); dev.off()
 })
+
+# Final feature/violin plots for publication
+
+p <- FeaturePlot(seurat_integrated, features = "ALDH1A1", 
+                 split.by = "orig.ident", max.cutoff = 3, 
+                 cols = c("grey", "red"), pt.size = 0.1)
+
+pdf(file.path("results", "gene_plots", "Feature_ALDH1A1.pdf"), height = 6, width = 15)
+p
+dev.off()
+
+p <- FeaturePlot(seurat_integrated, features = "SOX2", 
+                 split.by = "orig.ident", max.cutoff = 3, 
+                 cols = c("grey", "red"), pt.size = 0.1)
+
+pdf(file.path("results", "gene_plots", "Feature_SOX2.pdf"), height = 6, width = 15)
+p
+dev.off()
+
+p <- FeaturePlot(seurat_integrated, features = "CD24", 
+                 split.by = "orig.ident", max.cutoff = 3, 
+                 cols = c("grey", "red"), pt.size = 0.1)
+
+pdf(file.path("results", "gene_plots", "Feature_CD24.pdf"), height = 6, width = 15)
+p
+dev.off()
+
+p <- FeaturePlot(seurat_integrated, features = "PAX8", 
+                 split.by = "orig.ident", max.cutoff = 3, 
+                 cols = c("grey", "red"), pt.size = 0.1)
+
+pdf(file.path("results", "gene_plots", "Feature_PAX8.pdf"), height = 6, width = 15)
+p
+dev.off()
+
+p <- FeaturePlot(seurat_integrated, features = "OVGP1", 
+                 split.by = "orig.ident", max.cutoff = 3, 
+                 cols = c("grey", "red"), pt.size = 0.1)
+
+pdf(file.path("results", "gene_plots", "Feature_OVGP1.pdf"), height = 6, width = 15)
+p
+dev.off()
+
+# Violin Plots
+
+plots <- VlnPlot(seurat_integrated, features = "ALDH1A1", split.by = "orig.ident", 
+                 pt.size = 0, combine = FALSE)
+p <- wrap_plots(plots = plots, ncol = 1)
+pdf(file.path("results", "gene_plots", "Violin_ALDH1A1.pdf"), height = 8, width = 12)
+p
+dev.off()
+
+plots <- VlnPlot(seurat_integrated, features = "SOX2", split.by = "orig.ident", 
+                 pt.size = 0, combine = FALSE)
+p <- wrap_plots(plots = plots, ncol = 1)
+pdf(file.path("results", "gene_plots", "Violin_SOX2.pdf"), height = 8, width = 12)
+p
+dev.off()
+
+plots <- VlnPlot(seurat_integrated, features = "CD24", split.by = "orig.ident", 
+                 pt.size = 0, combine = FALSE)
+p <- wrap_plots(plots = plots, ncol = 1)
+pdf(file.path("results", "gene_plots", "Violin_CD24.pdf"), height = 8, width = 12)
+p
+dev.off()
+
+plots <- VlnPlot(seurat_integrated, features = "PAX8", split.by = "orig.ident", 
+                 pt.size = 0, combine = FALSE)
+p <- wrap_plots(plots = plots, ncol = 1)
+pdf(file.path("results", "gene_plots", "Violin_PAX8.pdf"), height = 8, width = 12)
+p
+dev.off()
+
+plots <- VlnPlot(seurat_integrated, features = "OVGP1", split.by = "orig.ident", 
+                 pt.size = 0, combine = FALSE)
+p <- wrap_plots(plots = plots, ncol = 1)
+pdf(file.path("results", "gene_plots", "Violin_OVGP1.pdf"), height = 8, width = 12)
+p
+dev.off()
+
+

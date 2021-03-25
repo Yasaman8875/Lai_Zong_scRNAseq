@@ -11,8 +11,8 @@ options(future.globals.maxSize = 10000 * 1024 ^2)
 plan("multiprocess", workers = 2)
 
 samples_10x <- list(DMSO = file.path("DMSO", "outs", "filtered_feature_bc_matrix"),
-                    EZH2i = file.path("EZH2i", "outs", "filtered_feature_bc_matrix"),
-                    RACi = file.path("RACi", "outs", "filtered_feature_bc_matrix"),
+                    GSK126 = file.path("EZH2i", "outs", "filtered_feature_bc_matrix"),
+                    NSC23766 = file.path("RACi", "outs", "filtered_feature_bc_matrix"),
                     Combo = file.path("EZH2-RACi", "outs", "filtered_feature_bc_matrix")
 )
 counts_10X <- map(samples_10x, Read10X)
@@ -48,8 +48,8 @@ mt_data <- map(seurat_obj, function(x) {
 })
 
 mt_data$DMSO$sample <- "DMSO"
-mt_data$EZH2$sample <- "EZH2"
-mt_data$RACi$sample <- "RACi"
+mt_data$GSK126$sample <- "GSK126"
+mt_data$NSC23766$sample <- "NSC23766"
 mt_data$Combo$sample <- "Combo"
 
 mt_data <- bind_rows(mt_data)
@@ -205,7 +205,8 @@ set.tempdir("tempdir")
 Idents(seurat_integrated) <- "integrated_snn_res.0.3"
 seurat_integrated <- RunUMAP(seurat_integrated, dims = 1:40)
 
-seurat_integrated$orig.ident <- factor(seurat_integrated$orig.ident, levels = c("DMSO", "EZH2i", "RACi", "Combo"))
+seurat_integrated$orig.ident <- factor(
+  seurat_integrated$orig.ident, levels = c("DMSO", "GSK126", "NSC23766", "Combo"))
 
 p <- DimPlot(seurat_integrated, group.by = "ident", split.by = "orig.ident", ncol = 2)
 
