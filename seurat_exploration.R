@@ -456,4 +456,18 @@ pdf(file.path("results", "gene_plots", "Violin_OVGP1.pdf"), height = 8, width = 
 p
 dev.off()
 
+p <- FeaturePlot(seurat_integrated, features = "SIRT7", 
+                 split.by = "orig.ident", max.cutoff = 3, 
+                 cols = c("grey", "red"), pt.size = 0.1)
+
+pdf(file.path("results", "gene_plots", "Feature_SIRT7.pdf"), height = 12, width = 20)
+p
+dev.off()
+
+plots <- VlnPlot(seurat_integrated, features = "SIRT7", split.by = "orig.ident", 
+                 pt.size = 0, combine = FALSE)
+p <- wrap_plots(plots = plots, ncol = 1)
+pdf(file.path("results", "gene_plots", "Violin_SIRT7.pdf"), height = 12, width = 12)
+p
+dev.off()
 
