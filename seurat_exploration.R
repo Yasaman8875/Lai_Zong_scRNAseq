@@ -471,3 +471,12 @@ pdf(file.path("results", "gene_plots", "Violin_SIRT7.pdf"), height = 12, width =
 p
 dev.off()
 
+# Consider SIRT7 in cluster 2 specifically
+seurat_integrated <- subset(seurat_integrated, subset = integrated_snn_res.0.3 == "2")
+p <- FeaturePlot(seurat_integrated, features = "SIRT7", 
+                 split.by = "orig.ident", max.cutoff = 3, 
+                 cols = c("grey", "red"), pt.size = 0.1)
+
+pdf(file.path("results", "gene_plots", "Cluster2_SIRT7.pdf"), height = 12, width = 20)
+p
+dev.off()
