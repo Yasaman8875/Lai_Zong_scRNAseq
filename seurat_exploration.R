@@ -3,6 +3,7 @@ library("tidyverse")
 library("data.table")
 library("scProportionTest")
 library("future")
+library("wesanderson")
 library(patchwork)
 
 options(future.globals.maxSize = 10000 * 1024 ^2)
@@ -315,7 +316,7 @@ dev.off()
 # Integrated clusters
 p <- DimPlot(seurat_integrated, 
              reduction = "umap",
-             label = TRUE,
+             label = FALSE,
              label.size = 3,
              repel = TRUE)
 pdf(file.path("results", "clustering", "integrated_clusters.pdf"), height = 10, width = 10)
@@ -333,9 +334,9 @@ if (!dir.exists(file.path("results", "cell_cycle"))) {
 sc_utils_obj <- sc_utils(seurat_integrated)
 
 comparisons <- list(
-    c("GSK126", "DMSO"),
-    c("NSC23766", "DMSO"),
-    c("Combo", "DMSO"),
+    c("DMSO", "GSK126"),
+    c("DMSO", "NSC23766"),
+    c("DMSO", "Combo"),
     c("GSK126", "NSC23766"),
     c("Combo", "GSK126"),
     c("Combo", "NSC23766")
@@ -403,19 +404,21 @@ pdf(file.path("results", "gene_plots", "Feature_CD24.pdf"), height = 6, width = 
 p
 dev.off()
 
-p <- FeaturePlot(seurat_integrated, features = "PAX8", 
+genes <- c("PAX8", "OVGP1")
+
+p <- FeaturePlot(seurat_integrated, features = genes, 
                  split.by = "orig.ident", max.cutoff = 3, 
                  cols = c("grey", "red"), pt.size = 0.1)
 
-pdf(file.path("results", "gene_plots", "Feature_PAX8.pdf"), height = 6, width = 15)
+pdf(file.path("results", "gene_plots", "Feature_PAX8_OVGP1.pdf"), height = 12, width = 15)
 p
 dev.off()
 
-p <- FeaturePlot(seurat_integrated, features = "OVGP1", 
+p <- FeaturePlot(seurat_integrated, features = genes, 
                  split.by = "orig.ident", max.cutoff = 3, 
                  cols = c("grey", "red"), pt.size = 0.1)
 
-pdf(file.path("results", "gene_plots", "Feature_OVGP1.pdf"), height = 6, width = 15)
+pdf(file.path("results", "gene_plots", "Feature_OVGP1_OVGP1.pdf"), height = 12, width = 15)
 p
 dev.off()
 
@@ -480,3 +483,25 @@ p <- FeaturePlot(seurat_integrated, features = "SIRT7",
 pdf(file.path("results", "gene_plots", "Cluster2_SIRT7.pdf"), height = 12, width = 20)
 p
 dev.off()
+
+
+## Cell Cycle
+
+if (!dir.exists(file.path("results", "cell_cycle"))) {
+	dir.create(file.path("results", "cell_cycle"))
+}
+
+cell_cycle_palette <- wes_palette("Zissou1", 3, type = "continuous") %>%
+	as.character
+
+## Dim plots of cell cycle phase.
+
+p <- DimPlot(
+	seurat_integrated, group.by = "Phase", split.by = "orig.ident",
+	ncol = 2, cols = cell_cycle_palette
+)
+
+pdf(file.path("results", "cell_cycle", "cell_cycle_dimplot.pdf"), height = 10, width = 10)
+p
+dev.off()
+
