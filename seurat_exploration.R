@@ -380,6 +380,105 @@ walk(comparisons, function(x) {
 
 # Final feature/violin plots for publication
 
+genes <- c("ALDH2", "ALDH6A1", "ALDH7A1", "ALDH9A1", "ALDH1A2", 
+           "ALDH1A3", "PROM1", "CD44")
+p <- FeaturePlot(seurat_integrated, features = genes[1:2], 
+                 split.by = "orig.ident", max.cutoff = 3, 
+                 cols = c("grey", "red"), pt.size = 0.1)
+
+pdf(file.path("results", "gene_plots", "Feature_ALDH_1.pdf"), height = 10, width = 20)
+p
+dev.off()
+
+## Violin Plot
+plots <- VlnPlot(seurat_integrated, features = genes[1:2], split.by = "orig.ident", 
+                 pt.size = 0, combine = FALSE)
+p <- wrap_plots(plots = plots, ncol = 1)
+pdf(file.path("results", "gene_plots", "Violin_ALDH_1.pdf"), height = 12, width = 12)
+p
+dev.off()
+
+p <- FeaturePlot(seurat_integrated, features = genes[3:4], 
+                 split.by = "orig.ident", max.cutoff = 3, 
+                 cols = c("grey", "red"), pt.size = 0.1)
+
+pdf(file.path("results", "gene_plots", "Feature_ALDH_2.pdf"), height = 10, width = 20)
+p
+dev.off()
+
+## Violin Plot
+plots <- VlnPlot(seurat_integrated, features = genes[3:4], split.by = "orig.ident", 
+                 pt.size = 0, combine = FALSE)
+p <- wrap_plots(plots = plots, ncol = 1)
+pdf(file.path("results", "gene_plots", "Violin_ALDH_2.pdf"), height = 12, width = 12)
+p
+dev.off()
+
+p <- FeaturePlot(seurat_integrated, features = genes[4:5], 
+                 split.by = "orig.ident", max.cutoff = 3, 
+                 cols = c("grey", "red"), pt.size = 0.1)
+
+pdf(file.path("results", "gene_plots", "Feature_ALDH_3.pdf"), height = 10, width = 20)
+p
+dev.off()
+
+## Violin Plot
+plots <- VlnPlot(seurat_integrated, features = genes[4:5], split.by = "orig.ident", 
+                 pt.size = 0, combine = FALSE)
+p <- wrap_plots(plots = plots, ncol = 1)
+pdf(file.path("results", "gene_plots", "Violin_ALDH_3.pdf"), height = 12, width = 12)
+p
+dev.off()
+
+p <- FeaturePlot(seurat_integrated, features = genes[6], 
+                 split.by = "orig.ident", max.cutoff = 3, 
+                 cols = c("grey", "red"), pt.size = 0.1)
+
+pdf(file.path("results", "gene_plots", "Feature_ALDH9A1.pdf"), height = 6, width = 15)
+p
+dev.off()
+
+## Violin Plot
+plots <- VlnPlot(seurat_integrated, features = genes[6], split.by = "orig.ident", 
+                 pt.size = 0, combine = FALSE)
+p <- wrap_plots(plots = plots, ncol = 1)
+pdf(file.path("results", "gene_plots", "Violin_ALDH9A1.pdf"), height = 8, width = 12)
+p
+dev.off()
+
+p <- FeaturePlot(seurat_integrated, features = genes[7], 
+                 split.by = "orig.ident", max.cutoff = 3, 
+                 cols = c("grey", "red"), pt.size = 0.1)
+
+pdf(file.path("results", "gene_plots", "Feature_PROM.pdf"), height = 6, width = 15)
+p
+dev.off()
+
+## Violin Plot
+plots <- VlnPlot(seurat_integrated, features = genes[7], split.by = "orig.ident", 
+                 pt.size = 0, combine = FALSE)
+p <- wrap_plots(plots = plots, ncol = 1)
+pdf(file.path("results", "gene_plots", "Violin_PROM.pdf"), height = 8, width = 12)
+p
+dev.off()
+
+p <- FeaturePlot(seurat_integrated, features = genes[8], 
+                 split.by = "orig.ident", max.cutoff = 3, 
+                 cols = c("grey", "red"), pt.size = 0.1)
+
+pdf(file.path("results", "gene_plots", "Feature_CD44.pdf"), height = 6, width = 15)
+p
+dev.off()
+
+## Violin Plot
+plots <- VlnPlot(seurat_integrated, features = genes[8], split.by = "orig.ident", 
+                 pt.size = 0, combine = FALSE)
+p <- wrap_plots(plots = plots, ncol = 1)
+pdf(file.path("results", "gene_plots", "Violin_CD44.pdf"), height = 8, width = 12)
+p
+dev.off()
+
+
 p <- FeaturePlot(seurat_integrated, features = "ALDH1A1", 
                  split.by = "orig.ident", max.cutoff = 3, 
                  cols = c("grey", "red"), pt.size = 0.1)
