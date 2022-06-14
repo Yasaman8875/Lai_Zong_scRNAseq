@@ -604,3 +604,6 @@ pdf(file.path("results", "cell_cycle", "cell_cycle_dimplot.pdf"), height = 10, w
 p
 dev.off()
 
+# Get cluster cell counts broken down by condition
+
+table(seurat_integrated@meta.data$integrated_snn_res.0.3, seurat_integrated@meta.data$orig.ident)
