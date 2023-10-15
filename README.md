@@ -1,5 +1,5 @@
 # agnes_scRNA
-
+# agnes_scRNA
 # Preprocessing
 The data was obtained in the FASTQ format from 10X. I ran FASTQC to assess the quality first and then passed it through cellranger count. 
 
